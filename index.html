@@ -3,90 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>跑步时间调整</title>
+    <title>Alpaca - Pace Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
-    <div class="container mx-auto max-w-2xl px-4 py-8">
-        <h1 class="text-center text-2xl font-bold mb-8 text-gray-800">跑步时间调整</h1>
+    <div class="container mx-auto max-w-2xl px-2 py-4">
+        <h1 class="text-center text-xl font-bold mb-1 text-gray-800">Alpaca - Pace Calculator</h1>
+        <h2 class="text-center text-sm mb-4 text-gray-600">配速计算器</h2>
         
         <!-- 配速输入 -->
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">配速 (分钟:秒/公里)</label>
-            <div class="flex items-center space-x-2">
-                <input type="number" class="w-20 px-3 py-2 border rounded-md" id="paceMinutes" min="2" max="20" value="5" step="1">
-                <span class="text-gray-600">分</span>
-                <input type="number" class="w-20 px-3 py-2 border rounded-md" id="paceSeconds" min="0" max="59" value="0" step="1">
-                <span class="text-gray-600">秒</span>
+        <div id="kmPace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2">
+            <div class="flex justify-between items-center mb-1 pr-4">
+                <label class="text-sm font-medium text-gray-700">配速</label>
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-600 mr-2">KM</span>
+                    <button id="unitToggle" class="relative inline-flex items-center h-6 rounded-full w-11 bg-blue-600 transition-colors focus:outline-none">
+                        <span id="toggleButton" class="inline-block w-4 h-4 transform translate-x-1 bg-white rounded-full transition-transform"></span>
+                    </button>
+                    <span class="text-sm text-gray-600 ml-2">MI</span>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="paceMinutes" min="2" max="20" value="5" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="paceSeconds" min="0" max="59" value="0" step="1">
+                </div>
+                <span id="kmPaceMileEquiv" class="text-sm text-gray-600">(8:03 /mi)</span>
+            </div>
+            <div class="flex justify-between mt-2 text-sm text-gray-600">
+                <span id="kmPaceSpeedMS">3.33 m/s</span>
+                <span id="kmPaceSpeedKMH">12.0 km/h</span>
+                <span id="kmPaceSpeedMPH">7.45 mi/h</span>
             </div>
         </div>
 
-        <!-- 1K和5K -->
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">1K 时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md" id="1kMinutes" min="0" max="59" value="5" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md" id="1kSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+        <div id="milePace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2 hidden">
+            <div class="flex justify-between items-center mb-1 pr-4">
+                <label class="text-sm font-medium text-gray-700">配速</label>
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-600 mr-2">KM</span>
+                    <button id="unitToggleMile" class="relative inline-flex items-center h-6 rounded-full w-11 bg-green-600 transition-colors focus:outline-none">
+                        <span id="toggleButtonMile" class="inline-block w-4 h-4 transform translate-x-6 bg-white rounded-full transition-transform"></span>
+                    </button>
+                    <span class="text-sm text-gray-600 ml-2">MI</span>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">5K 时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md" id="5kMinutes" min="0" max="59" value="25" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md" id="5kSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="paceMilesMinutes" min="3" max="32" value="8" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="paceMilesSeconds" min="0" max="59" value="0" step="1">
+                </div>
+                <span id="milePaceKmEquiv" class="text-sm text-gray-600">(5:00 /km)</span>
+            </div>
+            <div class="flex justify-between mt-2 text-sm text-gray-600">
+                <span id="milePaceSpeedMS">3.33 m/s</span>
+                <span id="milePaceSpeedKMH">12.0 km/h</span>
+                <span id="milePaceSpeedMPH">7.45 mi/h</span>
+            </div>
+        </div>
+
+        <!-- 800M和5K -->
+        <div class="grid grid-cols-1 gap-2 mb-2">
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">800M</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="800mMinutes" min="0" max="59" value="4" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="800mSeconds" min="0" max="59" value="0" step="1">
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">5K</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="5kMinutes" min="0" max="59" value="25" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-20 px-2 py-1 border rounded-md text-sm" id="5kSeconds" min="0" max="59" value="0" step="1">
                 </div>
             </div>
         </div>
 
         <!-- 10K以上的距离 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">10K 时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="10kHours" min="0" max="23" value="0" step="1">
-                    <span class="text-gray-600">时</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="10kMinutes" min="0" max="59" value="50" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="10kSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+        <div class="grid grid-cols-1 gap-2">
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">10K</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="10kHours" min="0" max="23" value="0" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="10kMinutes" min="0" max="59" value="50" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="10kSeconds" min="0" max="59" value="0" step="1">
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">20K 时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="20kHours" min="0" max="23" value="1" step="1">
-                    <span class="text-gray-600">时</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="20kMinutes" min="0" max="59" value="40" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="20kSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">20K</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="20kHours" min="0" max="23" value="1" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="20kMinutes" min="0" max="59" value="40" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="20kSeconds" min="0" max="59" value="0" step="1">
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">半马时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="halfMarathonHours" min="0" max="23" value="1" step="1">
-                    <span class="text-gray-600">时</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="halfMarathonMinutes" min="0" max="59" value="50" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="halfMarathonSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">半马</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="halfMarathonHours" min="0" max="23" value="1" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="halfMarathonMinutes" min="0" max="59" value="50" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="halfMarathonSeconds" min="0" max="59" value="0" step="1">
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm p-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">全马时间</label>
-                <div class="flex items-center space-x-2">
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="marathonHours" min="0" max="23" value="3" step="1">
-                    <span class="text-gray-600">时</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="marathonMinutes" min="0" max="59" value="30" step="1">
-                    <span class="text-gray-600">分</span>
-                    <input type="number" class="w-16 px-3 py-2 border rounded-md" id="marathonSeconds" min="0" max="59" value="0" step="1">
-                    <span class="text-gray-600">秒</span>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">全马</label>
+                <div class="flex items-center">
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="marathonHours" min="0" max="23" value="3" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="marathonMinutes" min="0" max="59" value="30" step="1">
+                    <span class="text-gray-800 font-bold mx-1">:</span>
+                    <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="marathonSeconds" min="0" max="59" value="0" step="1">
                 </div>
             </div>
         </div>
