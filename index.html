@@ -31,10 +31,22 @@
                 </div>
                 <span id="kmPaceMileEquiv" class="text-sm text-gray-600">(8:03 /mi)</span>
             </div>
-            <div class="flex justify-between mt-2 text-sm text-gray-600">
-                <span id="kmPaceSpeedMS">3.33 m/s</span>
-                <span id="kmPaceSpeedKMH">12.0 km/h</span>
-                <span id="kmPaceSpeedMPH">7.45 mi/h</span>
+            <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+                <div class="flex-1 grid grid-cols-4 gap-2">
+                    <div class="bg-yellow-100 rounded px-2 py-0.5">
+                        <span id="kmPaceSpeedMS">3.33</span>
+                        <span class="ml-1">m/s</span>
+                    </div>
+                    <div class="bg-gray-100 rounded px-2 py-0.5">
+                        <span id="kmPaceSpeedKMH">12.0</span>
+                        <span class="ml-1">km/h</span>
+                    </div>
+                    <div class="bg-green-100 rounded px-2 py-0.5">
+                        <span id="kmPaceSpeedMPH">7.45</span>
+                        <span class="ml-1">mi/h</span>
+                    </div>
+                    <div></div>
+                </div>
             </div>
         </div>
 
@@ -57,10 +69,22 @@
                 </div>
                 <span id="milePaceKmEquiv" class="text-sm text-gray-600">(5:00 /km)</span>
             </div>
-            <div class="flex justify-between mt-2 text-sm text-gray-600">
-                <span id="milePaceSpeedMS">3.33 m/s</span>
-                <span id="milePaceSpeedKMH">12.0 km/h</span>
-                <span id="milePaceSpeedMPH">7.45 mi/h</span>
+            <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+                <div class="flex-1 grid grid-cols-4 gap-2">
+                    <div class="bg-yellow-100 rounded px-2 py-0.5">
+                        <span id="milePaceSpeedMS">3.33</span>
+                        <span class="ml-1">m/s</span>
+                    </div>
+                    <div class="bg-gray-100 rounded px-2 py-0.5">
+                        <span id="milePaceSpeedKMH">12.0</span>
+                        <span class="ml-1">km/h</span>
+                    </div>
+                    <div class="bg-green-100 rounded px-2 py-0.5">
+                        <span id="milePaceSpeedMPH">7.45</span>
+                        <span class="ml-1">mi/h</span>
+                    </div>
+                    <div></div>
+                </div>
             </div>
         </div>
 
@@ -107,7 +131,7 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm p-3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">半马</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">半马 (21.095 km)</label>
                 <div class="flex items-center">
                     <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="halfMarathonHours" min="0" max="23" value="1" step="1">
                     <span class="text-gray-800 font-bold mx-1">:</span>
@@ -117,7 +141,7 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm p-3">
-                <label class="block text-sm font-medium text-gray-700 mb-1">全马</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">全马 (42.195 km)</label>
                 <div class="flex items-center">
                     <input type="number" class="w-14 px-2 py-1 border rounded-md text-sm" id="marathonHours" min="0" max="23" value="3" step="1">
                     <span class="text-gray-800 font-bold mx-1">:</span>

@@ -138,30 +138,25 @@ document.addEventListener('DOMContentLoaded', function() {
             const paceSeconds = parseInt(paceSecondsInput.value, 10);
             totalPaceSeconds = paceMinutes * 60 + paceSeconds;
             
-            // 计算速度
-            // 配速是每公里用时(秒)，需要转换为速度
-            const speedMS = (1000 / totalPaceSeconds).toFixed(2);  // m/s = 1000m / 秒数
-            const speedKMH = (3600 / totalPaceSeconds).toFixed(1); // km/h = (3600秒/配速秒数)
-            const speedMPH = (3600 / totalPaceSeconds / 1.609344).toFixed(2); // mile/h
+            const speedMS = (1000 / totalPaceSeconds).toFixed(2);
+            const speedKMH = (3600 / totalPaceSeconds).toFixed(1);
+            const speedMPH = (3600 / totalPaceSeconds / 1.609344).toFixed(2);
 
-            // 更新显示
-            document.getElementById('kmPaceSpeedMS').textContent = `${speedMS} m/s`;
-            document.getElementById('kmPaceSpeedKMH').textContent = `${speedKMH} km/h`;
-            document.getElementById('kmPaceSpeedMPH').textContent = `${speedMPH} mi/h`;
+            document.getElementById('kmPaceSpeedMS').textContent = speedMS;
+            document.getElementById('kmPaceSpeedKMH').textContent = speedKMH;
+            document.getElementById('kmPaceSpeedMPH').textContent = speedMPH;
         } else {
             const paceMilesMinutes = parseInt(paceMilesMinutesInput.value, 10);
             const paceMilesSeconds = parseInt(paceMilesSecondsInput.value, 10);
             totalPaceSeconds = paceMilesMinutes * 60 + paceMilesSeconds;
             
-            // 计算速度 (从英里配速转换)
-            const speedMPH = (3600 / totalPaceSeconds).toFixed(2); // mile/h
-            const speedKMH = (3600 / totalPaceSeconds * 1.609344).toFixed(1); // km/h
-            const speedMS = (1609.344 / totalPaceSeconds).toFixed(2);  // m/s = 1英里的米数/秒数
+            const speedMPH = (3600 / totalPaceSeconds).toFixed(2);
+            const speedKMH = (3600 / totalPaceSeconds * 1.609344).toFixed(1);
+            const speedMS = (1609.344 / totalPaceSeconds).toFixed(2);
 
-            // 更新显示
-            document.getElementById('milePaceSpeedMS').textContent = `${speedMS} m/s`;
-            document.getElementById('milePaceSpeedKMH').textContent = `${speedKMH} km/h`;
-            document.getElementById('milePaceSpeedMPH').textContent = `${speedMPH} mi/h`;
+            document.getElementById('milePaceSpeedMS').textContent = speedMS;
+            document.getElementById('milePaceSpeedKMH').textContent = speedKMH;
+            document.getElementById('milePaceSpeedMPH').textContent = speedMPH;
         }
     }
 
@@ -243,7 +238,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 添加输入验证和进位处理函数
+    // 修改输入事件监听的函数
+    function addInputListeners(input, callback) {
+        // 监听多个事件以确保在所有设备上都能正常工作
+        input.addEventListener('input', callback);
+        input.addEventListener('change', callback);
+        input.addEventListener('keyup', callback);
+        input.addEventListener('touchend', callback);
+    }
+
     function handleTimeInput(input, nextInput = null, prevInput = null) {
         let value = parseInt(input.value, 10);
         
@@ -254,35 +257,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 处理秒数进位
         if (input.id.toLowerCase().includes('seconds')) {
-            if (value >= 60) {
+            if (value > 59) {
                 if (prevInput) {
                     let prevValue = parseInt(prevInput.value, 10) || 0;
                     prevInput.value = prevValue + Math.floor(value / 60);
                     value = value % 60;
                 } else {
-                    value = 59;
+                    value = 0;
+                    if (prevInput) {
+                        let prevValue = parseInt(prevInput.value, 10) || 0;
+                        prevInput.value = prevValue + 1;
+                    }
                 }
             } else if (value < 0) {
-                value = 0;
+                value = 59;
+                if (prevInput) {
+                    let prevValue = parseInt(prevInput.value, 10) || 0;
+                    if (prevValue > 0) {
+                        prevInput.value = prevValue - 1;
+                    }
+                }
             }
         }
 
         // 处理分钟进位
         if (input.id.toLowerCase().includes('minutes')) {
-            if (value >= 60 && nextInput) {
-                let nextValue = parseInt(nextInput.value, 10) || 0;
-                nextValue += Math.floor(value / 60);
-                nextInput.value = nextValue;
-                value = value % 60;
+            if (value > 59) {
+                if (nextInput) {
+                    let nextValue = parseInt(nextInput.value, 10) || 0;
+                    nextInput.value = nextValue + Math.floor(value / 60);
+                    value = value % 60;
+                }
             } else if (value < 0) {
-                value = 0;
+                value = 59;
+                if (nextInput) {
+                    let nextValue = parseInt(nextInput.value, 10) || 0;
+                    if (nextValue > 0) {
+                        nextInput.value = nextValue - 1;
+                    }
+                }
             }
-        }
-
-        // 处理小时范围
-        if (input.id.toLowerCase().includes('hours')) {
-            if (value < 0) value = 0;
-            if (value > 23) value = 23;
         }
 
         // 更新输入框的值
@@ -297,49 +311,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 为所有时间输入框添加验证和进位处理
+    // 为所有输入框添加键盘事件监听
+    function addKeyboardListeners(input, nextInput = null, prevInput = null) {
+        input.addEventListener('keydown', (e) => {
+            let value = parseInt(input.value, 10) || 0;
+            
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                input.value = value + 1;
+                handleTimeInput(input, nextInput, prevInput);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                input.value = value - 1;
+                handleTimeInput(input, nextInput, prevInput);
+            }
+        });
+    }
+
+    // 为所有时间输入框添加事件监听器
     for (const [key, ids] of Object.entries(timeInputs)) {
         ids.forEach((id, index) => {
             const input = document.getElementById(id);
             const nextInput = index > 0 ? document.getElementById(ids[index - 1]) : null;
             const prevInput = index < ids.length - 1 ? document.getElementById(ids[index + 1]) : null;
             
-            input.addEventListener('input', () => {
-                handleTimeInput(input, nextInput, prevInput);
-            });
+            addInputListeners(input, () => handleTimeInput(input, nextInput, prevInput));
+            addKeyboardListeners(input, nextInput, prevInput);
         });
     }
 
     // 为配速输入框添加验证和进位处理
-    paceMinutesInput.addEventListener('input', () => {
+    addInputListeners(paceMinutesInput, () => {
         let value = parseInt(paceMinutesInput.value, 10);
         if (isNaN(value)) value = 5;
         if (value < 2) value = 2;
         if (value > 20) value = 20;
         paceMinutesInput.value = value;
         updateTimes('pace');
-        updateSpeeds();
     });
 
-    paceSecondsInput.addEventListener('input', () => {
-        handleTimeInput(paceSecondsInput, null, paceMinutesInput);
-        updateSpeeds();
+    addInputListeners(paceSecondsInput, () => {
+        let value = parseInt(paceSecondsInput.value, 10);
+        if (isNaN(value)) value = 0;
+        if (value >= 60) {
+            let minutesValue = parseInt(paceMinutesInput.value, 10) || 0;
+            paceMinutesInput.value = minutesValue + Math.floor(value / 60);
+            value = value % 60;
+        }
+        if (value < 0) value = 0;
+        paceSecondsInput.value = value;
+        updateTimes('pace');
     });
 
-    paceMilesMinutesInput.addEventListener('input', () => {
+    addInputListeners(paceMilesMinutesInput, () => {
         let value = parseInt(paceMilesMinutesInput.value, 10);
         if (isNaN(value)) value = 8;
         if (value < 3) value = 3;
         if (value > 32) value = 32;
         paceMilesMinutesInput.value = value;
         updateTimes('pace');
-        updateSpeeds();
     });
 
-    paceMilesSecondsInput.addEventListener('input', () => {
-        handleTimeInput(paceMilesSecondsInput, null, paceMilesMinutesInput);
-        updateSpeeds();
+    addInputListeners(paceMilesSecondsInput, () => {
+        let value = parseInt(paceMilesSecondsInput.value, 10);
+        if (isNaN(value)) value = 0;
+        if (value >= 60) {
+            let minutesValue = parseInt(paceMilesMinutesInput.value, 10) || 0;
+            paceMilesMinutesInput.value = minutesValue + Math.floor(value / 60);
+            value = value % 60;
+        }
+        if (value < 0) value = 0;
+        paceMilesSecondsInput.value = value;
+        updateTimes('pace');
     });
+
+    // 为配速输入框添加键盘事件监听
+    addKeyboardListeners(paceMinutesInput, null, null);
+    addKeyboardListeners(paceSecondsInput, null, paceMinutesInput);
+    addKeyboardListeners(paceMilesMinutesInput, null, null);
+    addKeyboardListeners(paceMilesSecondsInput, null, paceMilesMinutesInput);
 
     // 初始化等效配速显示
     updateEquivalentPace();
