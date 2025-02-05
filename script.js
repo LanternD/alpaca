@@ -512,4 +512,149 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // 配速调整相关元素
+    const adjustPaceBtn = document.getElementById('adjustPaceBtn');
+    const paceAdjustModal = document.getElementById('paceAdjustModal');
+    const minutesPicker = document.getElementById('minutesPicker');
+    const secondsPicker = document.getElementById('secondsPicker');
+    const cancelPaceAdjust = document.getElementById('cancelPaceAdjust');
+    const confirmPaceAdjust = document.getElementById('confirmPaceAdjust');
+
+    // 初始化选择器选项
+    function initializePickers() {
+        const itemHeight = 48;
+        const paddingCount = Math.floor(48 * 2 / itemHeight);
+        const paddingOptions = Array(paddingCount).fill('').map(() => 
+            `<div class="h-12 flex items-center justify-center snap-center" data-value="padding"></div>`
+        ).join('');
+
+        // 分钟选项 (2-20)
+        minutesPicker.innerHTML = paddingOptions +
+            Array.from({length: 19}, (_, i) => i + 2)
+                .map(num => `<div class="h-12 flex items-center justify-center snap-center text-lg font-medium" data-value="${num}">${num}</div>`)
+                .join('') + 
+            paddingOptions;
+
+        // 秒数选项 (0-59)
+        secondsPicker.innerHTML = paddingOptions +
+            Array.from({length: 60}, (_, i) => i)
+                .map(num => `<div class="h-12 flex items-center justify-center snap-center text-lg font-medium" data-value="${num}">${num.toString().padStart(2, '0')}</div>`)
+                .join('') +
+            paddingOptions;
+
+        function updateHighlight(picker) {
+            const items = Array.from(picker.children).filter(item => item.dataset.value !== 'padding');
+            const centerY = picker.scrollTop + picker.offsetHeight / 2;
+            
+            items.forEach(item => {
+                const itemCenter = item.offsetTop + item.offsetHeight / 2;
+                const distance = Math.abs(centerY - itemCenter);
+                
+                if (distance < itemHeight / 2) {
+                    item.classList.add('text-blue-600');
+                } else {
+                    item.classList.remove('text-blue-600');
+                }
+            });
+        }
+
+        function snapToClosestItem(picker) {
+            const currentScroll = picker.scrollTop;
+            const targetScroll = Math.round(currentScroll / itemHeight) * itemHeight;
+            
+            picker.scrollTo({
+                top: targetScroll,
+                behavior: 'smooth'
+            });
+
+            // 在滚动完成后更新高亮
+            setTimeout(() => updateHighlight(picker), 200);
+        }
+
+        [minutesPicker, secondsPicker].forEach(picker => {
+            let isScrolling;
+            
+            picker.addEventListener('scroll', () => {
+                // 清除之前的定时器
+                window.clearTimeout(isScrolling);
+                
+                // 更新高亮
+                updateHighlight(picker);
+
+                // 设置新的定时器
+                isScrolling = setTimeout(() => {
+                    snapToClosestItem(picker);
+                }, 150);
+            });
+
+            picker.addEventListener('touchend', () => {
+                snapToClosestItem(picker);
+            });
+        });
+    }
+
+    // 修改显示模态框时的滚动定位逻辑
+    adjustPaceBtn.addEventListener('click', () => {
+        paceAdjustModal.classList.remove('hidden');
+        const itemHeight = 48;
+        const paddingCount = Math.floor(48 * 2 / itemHeight);
+        
+        // 设置当前值
+        const currentMinutes = parseInt(paceMinutesInput.value);
+        const currentSeconds = parseInt(paceSecondsInput.value);
+        
+        // 计算滚动位置
+        const minutesScrollTop = (currentMinutes - 2 + paddingCount) * itemHeight;
+        const secondsScrollTop = (currentSeconds + paddingCount) * itemHeight;
+        
+        // 直接设置滚动位置
+        minutesPicker.scrollTop = minutesScrollTop;
+        secondsPicker.scrollTop = secondsScrollTop;
+    });
+
+    // 修改确认选择的逻辑
+    confirmPaceAdjust.addEventListener('click', () => {
+        const itemHeight = 48;
+        const paddingCount = Math.floor(48 * 2 / itemHeight);
+        
+        // 等待最后一次滚动完成
+        setTimeout(() => {
+            // 获取选中的值，加上半个项目高度以对准中心位置
+            const minutesIndex = Math.round((minutesPicker.scrollTop + itemHeight/2) / itemHeight);
+            const secondsIndex = Math.round((secondsPicker.scrollTop + itemHeight/2) / itemHeight);
+            
+            const selectedMinute = minutesIndex - paddingCount + 2;
+            const selectedSecond = secondsIndex - paddingCount;
+
+            // 更新输入框
+            if (selectedMinute >= 2 && selectedMinute <= 20) {
+                paceMinutesInput.value = selectedMinute;
+            }
+            if (selectedSecond >= 0 && selectedSecond <= 59) {
+                paceSecondsInput.value = selectedSecond.toString().padStart(2, '0');
+            }
+
+            // 触发更新
+            updateTimes('pace');
+
+            // 关闭模态框
+            paceAdjustModal.classList.add('hidden');
+        }, 250);
+    });
+
+    // 移除取消按钮的事件监听器（如果有的话）
+    if (cancelPaceAdjust) {
+        cancelPaceAdjust.remove();
+    }
+
+    // 初始化选择器
+    initializePickers();
+
+    // 点击模态框背景关闭
+    paceAdjustModal.addEventListener('click', (e) => {
+        if (e.target === paceAdjustModal) {
+            paceAdjustModal.classList.add('hidden');
+        }
+    });
 }); 

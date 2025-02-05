@@ -14,7 +14,7 @@
         <!-- 配速输入 -->
         <div id="kmPace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2">
             <div class="flex justify-between items-center mb-1 pr-4">
-                <label class="text-sm font-medium text-gray-700">配速</label>
+                <label class="text-lg font-medium text-gray-700">配速</label>
                 <div class="flex items-center">
                     <span class="text-sm text-gray-600 mr-2">KM</span>
                     <button id="unitToggle" class="relative inline-flex items-center h-6 rounded-full w-11 bg-blue-600 transition-colors focus:outline-none">
@@ -23,13 +23,16 @@
                     <span class="text-sm text-gray-600 ml-2">MI</span>
                 </div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center">
                 <div class="flex items-center">
                     <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMinutes" min="2" max="20" value="5" step="1">
                     <span class="text-gray-800 font-bold mx-1">:</span>
                     <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceSeconds" min="0" max="59" value="00" step="1">
+                    <button id="adjustPaceBtn" class="ml-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 focus:outline-none">
+                        调整
+                    </button>
                 </div>
-                <span id="kmPaceMileEquiv" class="text-sm text-gray-600">(8:03 /mi)</span>
+                <span id="kmPaceMileEquiv" class="text-sm text-gray-600 ml-4">(8:03 /mi)</span>
             </div>
             <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
                 <div class="flex-1 grid grid-cols-4 gap-2">
@@ -52,7 +55,7 @@
 
         <div id="milePace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2 hidden">
             <div class="flex justify-between items-center mb-1 pr-4">
-                <label class="text-sm font-medium text-gray-700">配速</label>
+                <label class="text-lg font-medium text-gray-700">配速</label>
                 <div class="flex items-center">
                     <span class="text-sm text-gray-600 mr-2">KM</span>
                     <button id="unitToggleMile" class="relative inline-flex items-center h-6 rounded-full w-11 bg-green-600 transition-colors focus:outline-none">
@@ -61,13 +64,16 @@
                     <span class="text-sm text-gray-600 ml-2">MI</span>
                 </div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center">
                 <div class="flex items-center">
                     <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesMinutes" min="3" max="32" value="8" step="1">
                     <span class="text-gray-800 font-bold mx-1">:</span>
                     <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesSeconds" min="0" max="59" value="00" step="1">
+                    <button id="adjustPaceBtnMile" class="ml-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 focus:outline-none">
+                        调整
+                    </button>
                 </div>
-                <span id="milePaceKmEquiv" class="text-sm text-gray-600">(5:00 /km)</span>
+                <span id="milePaceKmEquiv" class="text-sm text-gray-600 ml-4">(5:00 /km)</span>
             </div>
             <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
                 <div class="flex-1 grid grid-cols-4 gap-2">
@@ -153,5 +159,41 @@
         </div>
     </div>
     <script src="script.js"></script>
+
+    <!-- 配速调整模态框 -->
+    <div id="paceAdjustModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-4 w-80">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-medium">调整配速</h3>
+            </div>
+            <div class="flex justify-center gap-8">
+                <div class="text-center w-24">
+                    <div class="text-sm text-gray-600 mb-2">分</div>
+                    <div class="h-48 overflow-hidden relative">
+                        <div id="minutesPicker" class="absolute inset-0 overflow-y-auto snap-y snap-mandatory">
+                            <!-- JavaScript 将动态填充选项 -->
+                        </div>
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-6 h-12 bg-blue-50/50 pointer-events-none"></div>
+                        <div class="absolute inset-0 w-full pointer-events-none bg-gradient-to-b from-white via-transparent to-white"></div>
+                    </div>
+                </div>
+                <div class="text-center w-24">
+                    <div class="text-sm text-gray-600 mb-2">秒</div>
+                    <div class="h-48 overflow-hidden relative">
+                        <div id="secondsPicker" class="absolute inset-0 overflow-y-auto snap-y snap-mandatory">
+                            <!-- JavaScript 将动态填充选项 -->
+                        </div>
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-6 h-12 bg-blue-50/50 pointer-events-none"></div>
+                        <div class="absolute inset-0 w-full pointer-events-none bg-gradient-to-b from-white via-transparent to-white"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button id="confirmPaceAdjust" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 
