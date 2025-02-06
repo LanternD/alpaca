@@ -2,6 +2,8 @@ import PacePickerModal from './pacePickerModal.js';
 import TimePickerManager from './timePickerManager.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+
     const sliders = document.querySelectorAll('input[type="range"]');
     sliders.forEach(slider => {
         slider.addEventListener('input', function() {
@@ -216,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 totalPaceSeconds = (paceMilesMinutes * 60 + paceMilesSeconds) * 0.621371;
             }
 
-            if (totalPaceSeconds > 0) {  // 只在有效配速时更新
+            if (totalPaceSeconds > 0) {
                 for (const [key, distance] of Object.entries(distances)) {
                     const newTotalSeconds = totalPaceSeconds * distance;
                     const newHours = Math.floor(newTotalSeconds / 3600);
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             const paceDistance = distances[changedKey];
-            if (totalSeconds[changedKey] > 0) {  // 只在有效时间时更新配速
+            if (totalSeconds[changedKey] > 0) {
                 calculatePace(totalSeconds[changedKey], paceDistance);
 
                 for (const [key, distance] of Object.entries(distances)) {
@@ -588,4 +590,91 @@ document.addEventListener('DOMContentLoaded', function() {
         timePickerManager.setIsKm(isKm);
         // ... 其他切换逻辑保持不变 ...
     }
+
+    // Tab 切换逻辑
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('a[href^="#tab"]');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // 移除所有 tab 的活动样式
+                tabs.forEach(t => {
+                    t.classList.remove('text-blue-700', 'border-l', 'border-t', 'border-r', '-mb-px');
+                    t.classList.add('text-blue-500');
+                });
+                
+                // 添加当前 tab 的活动样式
+                tab.classList.add('text-blue-700', 'border-l', 'border-t', 'border-r', '-mb-px');
+                tab.classList.remove('text-blue-500');
+                
+                // 隐藏所有内容
+                contents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // 显示当前选中的内容
+                const targetId = tab.getAttribute('href').substring(1);
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+    });
+
+    // Populate the pace table
+    const paceTableBody = document.getElementById('paceTableBody');
+    const paceRange = [
+        { minutes: 9, seconds: 0 },
+        { minutes: 8, seconds: 45 },
+        { minutes: 8, seconds: 30 },
+        { minutes: 8, seconds: 15 },
+        { minutes: 8, seconds: 0 },
+        { minutes: 7, seconds: 45 },
+        { minutes: 7, seconds: 30 },
+        { minutes: 7, seconds: 15 },
+        { minutes: 7, seconds: 0 },
+        { minutes: 6, seconds: 45 },
+        { minutes: 6, seconds: 30 },
+        { minutes: 6, seconds: 15 },
+        { minutes: 6, seconds: 0 },
+        { minutes: 5, seconds: 45 },
+        { minutes: 5, seconds: 30 },
+        { minutes: 5, seconds: 15 },
+        { minutes: 5, seconds: 0 },
+        { minutes: 4, seconds: 45 },
+        { minutes: 4, seconds: 30 },
+        { minutes: 4, seconds: 15 },
+        { minutes: 4, seconds: 0 },
+        { minutes: 3, seconds: 45 },
+        { minutes: 3, seconds: 30 },
+        { minutes: 3, seconds: 15 },
+        { minutes: 3, seconds: 0 },
+        { minutes: 2, seconds: 45 }
+    ];
+
+    paceRange.forEach(pace => {
+        const paceInSeconds = pace.minutes * 60 + pace.seconds;
+        const row = document.createElement('tr');
+
+        const paceCell = document.createElement('td');
+        paceCell.className = 'py-2 px-4 border-b border-gray-200 text-sm text-gray-700';
+        paceCell.textContent = `${pace.minutes}:${pace.seconds.toString().padStart(2, '0')}`;
+        row.appendChild(paceCell);
+
+        const distances = [5, 10, 21.0975, 42.195];
+        distances.forEach(distance => {
+            const totalSeconds = paceInSeconds * distance;
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.round(totalSeconds % 60);
+
+            const timeCell = document.createElement('td');
+            timeCell.className = 'py-2 px-4 border-b border-gray-200 text-sm text-gray-700';
+            timeCell.textContent = hours > 0 ? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` : `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            row.appendChild(timeCell);
+        });
+
+        paceTableBody.appendChild(row);
+    });
 }); 

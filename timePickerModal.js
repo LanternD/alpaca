@@ -4,6 +4,12 @@ class TimePickerModal {
         this.modal.className = 'fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50';
         this.setupModal();
         document.body.appendChild(this.modal);
+        
+        this.itemHeight = 48;
+        this.paddingCount = Math.floor(48 * 2 / this.itemHeight);
+        
+        this.initializePickers();
+        this.setupEventListeners();
     }
 
     setupModal() {
@@ -53,12 +59,6 @@ class TimePickerModal {
         this.minutesPicker = this.modal.querySelector('#minutesPickerTime');
         this.secondsPicker = this.modal.querySelector('#secondsPickerTime');
         this.confirmButton = this.modal.querySelector('#confirmTimeAdjust');
-        
-        this.itemHeight = 48;
-        this.paddingCount = Math.floor(48 * 2 / this.itemHeight);
-        
-        this.initializePickers();
-        this.setupEventListeners();
     }
 
     initializePickers() {

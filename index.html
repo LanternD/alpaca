@@ -21,165 +21,197 @@
     <div class="container mx-auto max-w-2xl px-2 py-4">
         <h1 class="text-center text-xl font-bold mb-1 text-gray-800">Alpaca - Pace Calculator</h1>
         <h2 class="text-center text-sm mb-4 text-gray-600">配速计算器</h2>
-        
-        <!-- 配速输入 -->
-        <div id="kmPace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2">
-            <div class="flex justify-between items-center mb-1 pr-4">
-                <label class="text-lg font-medium text-gray-700 w-24">配速</label>
+
+        <!-- Tabs -->
+        <div class="mb-4">
+            <ul class="flex border-b">
+                <li class="-mb-px mr-1">
+                    <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold" href="#tab1">Pace Calculator</a>
+                </li>
+                <li class="mr-1">
+                    <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#tab2">速查表</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab1" class="tab-content">
+            <!-- Existing content goes here -->
+            <div id="kmPace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2">
+                <div class="flex justify-between items-center mb-1 pr-4">
+                    <label class="text-lg font-medium text-gray-700 w-24">配速</label>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600 mr-2">KM</span>
+                        <button id="unitToggle" class="relative inline-flex items-center h-6 rounded-full w-11 bg-blue-600 transition-colors focus:outline-none">
+                            <span id="toggleButton" class="inline-block w-4 h-4 transform translate-x-1 bg-white rounded-full transition-transform"></span>
+                        </button>
+                        <span class="text-sm text-gray-600 ml-2">MI</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center flex-grow justify-center">
+                        <input type="number" class="w-20 px-3 py-2 border rounded-md text-xl" id="paceMinutes" min="2" max="20" value="5" step="1">
+                        <span class="text-gray-800 font-bold mx-2 text-xl">:</span>
+                        <input type="number" class="w-20 px-3 py-2 border rounded-md text-xl" id="paceSeconds" min="0" max="59" value="00" step="1">
+                        <button id="adjustPaceBtn" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                    </div>
+                    <span id="kmPaceMileEquiv" class="text-sm text-gray-600 ml-4">(8:03 /mi)</span>
+                </div>
+                <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+                    <div class="flex-1 grid grid-cols-4 gap-2">
+                        <div class="bg-yellow-100 rounded px-2 py-0.5">
+                            <span id="kmPaceSpeedMS">3.33</span>
+                            <span class="ml-1">m/s</span>
+                        </div>
+                        <div class="bg-gray-100 rounded px-2 py-0.5">
+                            <span id="kmPaceSpeedKMH">12.0</span>
+                            <span class="ml-1">km/h</span>
+                        </div>
+                        <div class="bg-green-100 rounded px-2 py-0.5">
+                            <span id="kmPaceSpeedMPH">7.45</span>
+                            <span class="ml-1">mi/h</span>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="milePace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2 hidden">
+                <div class="flex justify-between items-center mb-1 pr-4">
+                    <label class="text-lg font-medium text-gray-700">配速</label>
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600 mr-2">KM</span>
+                        <button id="unitToggleMile" class="relative inline-flex items-center h-6 rounded-full w-11 bg-green-600 transition-colors focus:outline-none">
+                            <span id="toggleButtonMile" class="inline-block w-4 h-4 transform translate-x-6 bg-white rounded-full transition-transform"></span>
+                        </button>
+                        <span class="text-sm text-gray-600 ml-2">MI</span>
+                    </div>
+                </div>
                 <div class="flex items-center">
-                    <span class="text-sm text-gray-600 mr-2">KM</span>
-                    <button id="unitToggle" class="relative inline-flex items-center h-6 rounded-full w-11 bg-blue-600 transition-colors focus:outline-none">
-                        <span id="toggleButton" class="inline-block w-4 h-4 transform translate-x-1 bg-white rounded-full transition-transform"></span>
-                    </button>
-                    <span class="text-sm text-gray-600 ml-2">MI</span>
+                    <div class="flex items-center">
+                        <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesMinutes" min="3" max="32" value="8" step="1">
+                        <span class="text-gray-800 font-bold mx-1">:</span>
+                        <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesSeconds" min="0" max="59" value="00" step="1">
+                        <button id="adjustPaceBtnMile" class="ml-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 focus:outline-none">
+                            <span class="text-lg">⚄</span>
+                        </button>
+                    </div>
+                    <span id="milePaceKmEquiv" class="text-sm text-gray-600 ml-4">(5:00 /km)</span>
+                </div>
+                <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
+                    <div class="flex-1 grid grid-cols-4 gap-2">
+                        <div class="bg-yellow-100 rounded px-2 py-0.5">
+                            <span id="milePaceSpeedMS">3.33</span>
+                            <span class="ml-1">m/s</span>
+                        </div>
+                        <div class="bg-gray-100 rounded px-2 py-0.5">
+                            <span id="milePaceSpeedKMH">12.0</span>
+                            <span class="ml-1">km/h</span>
+                        </div>
+                        <div class="bg-green-100 rounded px-2 py-0.5">
+                            <span id="milePaceSpeedMPH">7.45</span>
+                            <span class="ml-1">mi/h</span>
+                        </div>
+                        <div></div>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center flex-grow justify-center">
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md text-xl" id="paceMinutes" min="2" max="20" value="5" step="1">
-                    <span class="text-gray-800 font-bold mx-2 text-xl">:</span>
-                    <input type="number" class="w-20 px-3 py-2 border rounded-md text-xl" id="paceSeconds" min="0" max="59" value="00" step="1">
-                    <button id="adjustPaceBtn" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
+            <!-- 800M和5K -->
+            <div class="grid grid-cols-1 gap-2 mb-2">
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-24">800M</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="800mDisplay">4:00</span>
+                        <button id="adjust800m" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="800mMinutes" value="4">
+                        <input type="hidden" id="800mSeconds" value="00">
+                    </div>
                 </div>
-                <span id="kmPaceMileEquiv" class="text-sm text-gray-600 ml-4">(8:03 /mi)</span>
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-24">5K</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="5kDisplay">25:00</span>
+                        <button id="adjust5k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="5kMinutes" value="25">
+                        <input type="hidden" id="5kSeconds" value="00">
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
-                <div class="flex-1 grid grid-cols-4 gap-2">
-                    <div class="bg-yellow-100 rounded px-2 py-0.5">
-                        <span id="kmPaceSpeedMS">3.33</span>
-                        <span class="ml-1">m/s</span>
+            <!-- 10K以上的距离 -->
+            <div class="grid grid-cols-1 gap-2">
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-24">10K</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="10kDisplay">0:50:00</span>
+                        <button id="adjust10k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="10kHours" value="0">
+                        <input type="hidden" id="10kMinutes" value="50">
+                        <input type="hidden" id="10kSeconds" value="00">
                     </div>
-                    <div class="bg-gray-100 rounded px-2 py-0.5">
-                        <span id="kmPaceSpeedKMH">12.0</span>
-                        <span class="ml-1">km/h</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-24">20K</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="20kDisplay">1:40:00</span>
+                        <button id="adjust20k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="20kHours" value="1">
+                        <input type="hidden" id="20kMinutes" value="40">
+                        <input type="hidden" id="20kSeconds" value="00">
                     </div>
-                    <div class="bg-green-100 rounded px-2 py-0.5">
-                        <span id="kmPaceSpeedMPH">7.45</span>
-                        <span class="ml-1">mi/h</span>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-32">半马 (21.095)</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="halfMarathonDisplay">1:50:00</span>
+                        <button id="adjustHalfMarathon" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="halfMarathonHours" value="1">
+                        <input type="hidden" id="halfMarathonMinutes" value="50">
+                        <input type="hidden" id="halfMarathonSeconds" value="00">
                     </div>
-                    <div></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-lg font-medium text-gray-700 w-32">全马 (42.195)</label>
+                        <span class="text-2xl font-medium flex-grow text-center" id="marathonDisplay">3:30:00</span>
+                        <button id="adjustMarathon" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
+                            <i class="fa-solid fa-dice-d20"></i>
+                        </button>
+                        <input type="hidden" id="marathonHours" value="3">
+                        <input type="hidden" id="marathonMinutes" value="30">
+                        <input type="hidden" id="marathonSeconds" value="00">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="milePace" class="bg-blue-100 rounded-lg shadow-sm p-3 mb-2 hidden">
-            <div class="flex justify-between items-center mb-1 pr-4">
-                <label class="text-lg font-medium text-gray-700">配速</label>
-                <div class="flex items-center">
-                    <span class="text-sm text-gray-600 mr-2">KM</span>
-                    <button id="unitToggleMile" class="relative inline-flex items-center h-6 rounded-full w-11 bg-green-600 transition-colors focus:outline-none">
-                        <span id="toggleButtonMile" class="inline-block w-4 h-4 transform translate-x-6 bg-white rounded-full transition-transform"></span>
-                    </button>
-                    <span class="text-sm text-gray-600 ml-2">MI</span>
-                </div>
-            </div>
-            <div class="flex items-center">
-                <div class="flex items-center">
-                    <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesMinutes" min="3" max="32" value="8" step="1">
-                    <span class="text-gray-800 font-bold mx-1">:</span>
-                    <input type="number" class="w-16 px-2 py-1 border rounded-md text-sm" id="paceMilesSeconds" min="0" max="59" value="00" step="1">
-                    <button id="adjustPaceBtnMile" class="ml-2 px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300 focus:outline-none">
-                        <span class="text-lg">⚄</span>
-                    </button>
-                </div>
-                <span id="milePaceKmEquiv" class="text-sm text-gray-600 ml-4">(5:00 /km)</span>
-            </div>
-            <div class="flex items-center justify-between mt-2 text-sm text-gray-600">
-                <div class="flex-1 grid grid-cols-4 gap-2">
-                    <div class="bg-yellow-100 rounded px-2 py-0.5">
-                        <span id="milePaceSpeedMS">3.33</span>
-                        <span class="ml-1">m/s</span>
-                    </div>
-                    <div class="bg-gray-100 rounded px-2 py-0.5">
-                        <span id="milePaceSpeedKMH">12.0</span>
-                        <span class="ml-1">km/h</span>
-                    </div>
-                    <div class="bg-green-100 rounded px-2 py-0.5">
-                        <span id="milePaceSpeedMPH">7.45</span>
-                        <span class="ml-1">mi/h</span>
-                    </div>
-                    <div></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 800M和5K -->
-        <div class="grid grid-cols-1 gap-2 mb-2">
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-24">800M</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="800mDisplay">4:00</span>
-                    <button id="adjust800m" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="800mMinutes" value="4">
-                    <input type="hidden" id="800mSeconds" value="00">
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-24">5K</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="5kDisplay">25:00</span>
-                    <button id="adjust5k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="5kMinutes" value="25">
-                    <input type="hidden" id="5kSeconds" value="00">
-                </div>
-            </div>
-        </div>
-
-        <!-- 10K以上的距离 -->
-        <div class="grid grid-cols-1 gap-2">
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-24">10K</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="10kDisplay">0:50:00</span>
-                    <button id="adjust10k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="10kHours" value="0">
-                    <input type="hidden" id="10kMinutes" value="50">
-                    <input type="hidden" id="10kSeconds" value="00">
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-24">20K</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="20kDisplay">1:40:00</span>
-                    <button id="adjust20k" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="20kHours" value="1">
-                    <input type="hidden" id="20kMinutes" value="40">
-                    <input type="hidden" id="20kSeconds" value="00">
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-32">半马 (21.095)</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="halfMarathonDisplay">1:50:00</span>
-                    <button id="adjustHalfMarathon" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="halfMarathonHours" value="1">
-                    <input type="hidden" id="halfMarathonMinutes" value="50">
-                    <input type="hidden" id="halfMarathonSeconds" value="00">
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm p-3">
-                <div class="flex items-center justify-between">
-                    <label class="text-lg font-medium text-gray-700 w-32">全马 (42.195)</label>
-                    <span class="text-2xl font-medium flex-grow text-center" id="marathonDisplay">3:30:00</span>
-                    <button id="adjustMarathon" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-lg hover:bg-gray-300 focus:outline-none">
-                        <i class="fa-solid fa-dice-d20"></i>
-                    </button>
-                    <input type="hidden" id="marathonHours" value="3">
-                    <input type="hidden" id="marathonMinutes" value="30">
-                    <input type="hidden" id="marathonSeconds" value="00">
-                </div>
+        <div id="tab2" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <h3 class="text-lg font-medium text-gray-700 mb-2">速查表</h3>
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700">配速</th>
+                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700">5K 时间</th>
+                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700">10K 时间</th>
+                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700">半马 时间</th>
+                            <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-700">全马 时间</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paceTableBody">
+                        <!-- JavaScript will populate this table -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
