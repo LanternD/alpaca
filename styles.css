@@ -38,4 +38,213 @@ span {
     display: inline-block;
     margin-left: 10px;
     font-weight: bold;
+}
+
+/* 基础功能样式 */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.picker-gradient {
+    background: linear-gradient(180deg, 
+        rgba(255,255,255,1) 0%, 
+        rgba(255,255,255,0) 25%, 
+        rgba(255,255,255,0) 75%, 
+        rgba(255,255,255,1) 100%);
+}
+
+.picker-highlight {
+    background: rgba(13, 110, 253, 0.1);
+    pointer-events: none;
+}
+
+.snap-y {
+    scroll-snap-type: y mandatory;
+}
+
+.snap-center {
+    scroll-snap-align: center;
+}
+
+/* 自定义 Bootstrap 样式 */
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    padding: 0.75rem 1.25rem;
+    margin-right: 0.5rem;
+    border-radius: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 2px solid #0d6efd;
+    font-weight: 500;
+}
+
+/* 卡片样式 */
+.card {
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.pace-card {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* 按钮样式 */
+.btn-adjust {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-adjust:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
+
+/* 输入框样式 */
+.form-control-pace {
+    width: 4rem;
+    text-align: center;
+    font-size: 1.25rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
+}
+
+/* 切换按钮样式 */
+.unit-toggle {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #0d6efd;
+    border-radius: 1rem;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.unit-toggle.active {
+    background-color: #198754;
+}
+
+.toggle-handle {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    transition: transform 0.2s;
+}
+
+.toggle-handle.active {
+    transform: translateX(1.5rem);
+}
+
+/* 速度指标样式 */
+.speed-indicator {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.speed-ms {
+    background-color: rgba(255, 193, 7, 0.2);
+}
+
+.speed-kmh {
+    background-color: rgba(108, 117, 125, 0.2);
+}
+
+.speed-mph {
+    background-color: rgba(25, 135, 84, 0.2);
+}
+
+/* 表格样式 */
+.table-pace {
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
+}
+
+.table-pace th {
+    background-color: var(--bs-gray-100);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+}
+
+.table-pace td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+/* Modal 样式 */
+.modal-picker {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.modal-picker.show {
+    display: flex;
+}
+
+.modal-picker-content {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 24rem;
+}
+
+/* 选择器样式 */
+.picker-item {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    scroll-snap-align: center;
+}
+
+.picker-item.selected {
+    color: var(--bs-primary);
+    font-weight: 500;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .table-responsive {
+        margin: 0 -1rem;
+    }
+    
+    .table-pace th,
+    .table-pace td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
 } 

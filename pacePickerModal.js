@@ -1,12 +1,59 @@
 class PacePickerModal {
     constructor() {
-        this.modal = document.getElementById('paceAdjustModal');
-        this.minutesPicker = document.getElementById('minutesPicker');
-        this.secondsPicker = document.getElementById('secondsPicker');
-        this.confirmButton = document.getElementById('confirmPaceAdjust');
+        // 创建 modal 元素
+        this.modal = document.createElement('div');
+        this.modal.className = 'modal fade';
+        this.modal.id = 'pacePickerModal';
+        this.modal.setAttribute('tabindex', '-1');
+        
+        // 设置 modal 内容
+        this.modal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">调整配速</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-center gap-4">
+                            <div class="text-center" style="width: 120px;">
+                                <div class="text-muted mb-2">分</div>
+                                <div class="position-relative" style="height: 192px;">
+                                    <div id="minutesPicker" class="position-absolute top-0 bottom-0 w-100 overflow-auto hide-scrollbar snap-y">
+                                    </div>
+                                    <div class="position-absolute start-0 end-0 top-50 translate-middle-y picker-highlight" style="height: 48px;"></div>
+                                    <div class="position-absolute inset-0 w-100 picker-gradient"></div>
+                                </div>
+                            </div>
+                            <div class="text-center" style="width: 120px;">
+                                <div class="text-muted mb-2">秒</div>
+                                <div class="position-relative" style="height: 192px;">
+                                    <div id="secondsPicker" class="position-absolute top-0 bottom-0 w-100 overflow-auto hide-scrollbar snap-y">
+                                    </div>
+                                    <div class="position-absolute start-0 end-0 top-50 translate-middle-y picker-highlight" style="height: 48px;"></div>
+                                    <div class="position-absolute inset-0 w-100 picker-gradient"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="confirmPaceBtn">确定</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(this.modal);
+        
+        this.minutesPicker = this.modal.querySelector('#minutesPicker');
+        this.secondsPicker = this.modal.querySelector('#secondsPicker');
+        this.confirmButton = this.modal.querySelector('#confirmPaceBtn');
         
         this.itemHeight = 48;
         this.paddingCount = Math.floor(48 * 2 / this.itemHeight);
+        
+        // 初始化 Bootstrap modal
+        this.bsModal = new bootstrap.Modal(this.modal);
         
         this.initializePickers();
         this.setupEventListeners();
@@ -28,121 +75,106 @@ class PacePickerModal {
             this.createPaddingElements();
     }
 
-    createPaddingElements() {
-        return Array(this.paddingCount).fill('')
-            .map(() => `<div class="h-12 flex items-center justify-center snap-center opacity-0" data-value="padding"></div>`)
-            .join('');
+    createPickerItem(value, padZero = false) {
+        const displayValue = padZero ? value.toString().padStart(2, '0') : value;
+        return `<div class="picker-item d-flex align-items-center justify-content-center" style="height: ${this.itemHeight}px;" data-value="${value}">${displayValue}</div>`;
     }
 
-    createPickerItem(num, padZero = false) {
-        const displayNum = padZero ? num.toString().padStart(2, '0') : num;
-        return `<div class="h-12 flex items-center justify-center snap-center text-lg font-medium" data-value="${num}">${displayNum}</div>`;
+    createPaddingElements() {
+        return Array(this.paddingCount).fill(`<div class="picker-item" style="height: ${this.itemHeight}px;"></div>`).join('');
     }
 
     setupEventListeners() {
-        // 点击背景关闭
-        this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
-                this.hide();
-            }
-        });
-
-        // 为选择器添加滚动事件
         [this.minutesPicker, this.secondsPicker].forEach(picker => {
-            let isScrolling;
-            
-            picker.addEventListener('scroll', () => {
-                window.clearTimeout(isScrolling);
-                this.updateHighlight(picker);
-                isScrolling = setTimeout(() => this.snapToClosestItem(picker), 150);
-            });
-
-            picker.addEventListener('touchend', () => {
-                this.snapToClosestItem(picker);
-            });
+            picker.addEventListener('scroll', () => this.updateHighlight(picker));
         });
     }
 
     updateHighlight(picker) {
-        const items = Array.from(picker.children).filter(item => item.dataset.value !== 'padding');
-        const centerY = picker.scrollTop + picker.offsetHeight / 2;
+        const items = picker.querySelectorAll('.picker-item');
+        const middlePosition = picker.scrollTop + picker.offsetHeight / 2;
         
         items.forEach(item => {
-            const itemCenter = item.offsetTop + item.offsetHeight / 2;
-            const distance = Math.abs(centerY - itemCenter);
+            const itemMiddle = item.offsetTop + item.offsetHeight / 2;
+            const distance = Math.abs(itemMiddle - middlePosition);
             
-            if (distance < this.itemHeight / 2) {
-                item.classList.add('text-blue-600');
+            if (distance < item.offsetHeight / 2) {
+                item.classList.add('text-primary', 'fw-bold');
+                console.log('高亮项:', item.textContent);
             } else {
-                item.classList.remove('text-blue-600');
+                item.classList.remove('text-primary', 'fw-bold');
             }
         });
     }
 
     snapToClosestItem(picker) {
-        const currentScroll = picker.scrollTop;
-        const targetScroll = Math.round(currentScroll / this.itemHeight) * this.itemHeight;
+        const middlePosition = picker.scrollTop + picker.offsetHeight / 2;
+        const items = picker.querySelectorAll('.picker-item');
+        let closestItem = null;
+        let minDistance = Infinity;
         
-        picker.scrollTo({
-            top: targetScroll,
-            behavior: 'smooth'
+        items.forEach(item => {
+            if (!item.dataset.value) return;
+            
+            const itemMiddle = item.offsetTop + item.offsetHeight / 2;
+            const distance = Math.abs(itemMiddle - middlePosition);
+            
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestItem = item;
+            }
         });
-
-        setTimeout(() => this.updateHighlight(picker), 200);
-    }
-
-    show(currentMinutes, currentSeconds) {
-        console.log('显示配速调整模态框');
-        this.modal.classList.remove('hidden');
         
-        // 设置初始滚动位置
-        const minutesScrollTop = (currentMinutes - 2 + this.paddingCount) * this.itemHeight;
-        const secondsScrollTop = (currentSeconds + this.paddingCount) * this.itemHeight;
-        
-        this.minutesPicker.scrollTop = minutesScrollTop;
-        this.secondsPicker.scrollTop = secondsScrollTop;
-
-        // 初始化高亮
-        this.updateHighlight(this.minutesPicker);
-        this.updateHighlight(this.secondsPicker);
-    }
-
-    hide() {
-        this.modal.classList.add('hidden');
+        if (closestItem) {
+            picker.scrollTo({
+                top: closestItem.offsetTop - (picker.offsetHeight - closestItem.offsetHeight) / 2,
+                behavior: 'smooth'
+            });
+        }
     }
 
     onConfirm(callback) {
         this.confirmButton.addEventListener('click', () => {
-            // 先对选择器进行平滑滚动
             [this.minutesPicker, this.secondsPicker].forEach(picker => {
                 this.snapToClosestItem(picker);
             });
-
+            
             setTimeout(() => {
-                // 强制更新一次高亮状态
-                [this.minutesPicker, this.secondsPicker].forEach(picker => {
-                    this.updateHighlight(picker);
-                });
-
-                const minutesHighlighted = this.minutesPicker.querySelector('.text-blue-600');
-                const secondsHighlighted = this.secondsPicker.querySelector('.text-blue-600');
-
+                const minutesHighlighted = this.minutesPicker.querySelector('.text-primary');
+                const secondsHighlighted = this.secondsPicker.querySelector('.text-primary');
+                
                 if (minutesHighlighted && secondsHighlighted) {
                     const selectedMinute = parseInt(minutesHighlighted.dataset.value, 10);
                     const selectedSecond = parseInt(secondsHighlighted.dataset.value, 10);
                     callback(selectedMinute, selectedSecond);
                 }
-
+                
                 this.hide();
-            }, 200); // 延时200ms，确保滚动完成
+            }, 200);
         });
+    }
+
+    show(currentMinutes, currentSeconds) {
+        console.log('显示配速选择器:', currentMinutes, currentSeconds);
+        this.bsModal.show();
         
-        // 绑定 touchstart 事件以确保移动设备能触发
-        this.confirmButton.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            // 手动触发 click 事件逻辑
-            this.confirmButton.click();
-        });
+        setTimeout(() => {
+            const minutesScrollTop = (currentMinutes - 2 + this.paddingCount) * this.itemHeight;
+            const secondsScrollTop = (currentSeconds + this.paddingCount) * this.itemHeight;
+            
+            this.minutesPicker.scrollTop = minutesScrollTop;
+            this.secondsPicker.scrollTop = secondsScrollTop;
+            
+            this.updateHighlight(this.minutesPicker);
+            this.updateHighlight(this.secondsPicker);
+
+            this.snapToClosestItem(this.minutesPicker);
+            this.snapToClosestItem(this.secondsPicker);
+        }, 100);
+    }
+
+    hide() {
+        this.bsModal.hide();
     }
 }
 
