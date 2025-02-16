@@ -53,28 +53,85 @@
             border-radius: 0.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+
+        .toggle-container {
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-button {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: none;
+            background: none;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .toggle-background {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background-color: var(--bs-primary);
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        /* MI 状态的样式 */
+        .toggle-button[data-state="MI"] .toggle-background {
+            background-color: var(--bs-success);
+        }
+
+        .toggle-button[data-state="MI"] .toggle-slider {
+            transform: translateX(24px);
+        }
     </style>
 </head>
 <body class="bg-light">
     <div class="container py-4" style="max-width: 768px;">
-        <h1 class="text-center h4 mb-1">Alpaca - Pace Calculator</h1>
+        <h1 class="text-center h4 mb-1">Alpaca - Pace Calculator 🦙</h1>
         <h2 class="text-center small text-muted mb-4">配速计算器</h2>
 
         <!-- Tabs -->
-        <ul class="nav nav-tabs mb-4" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="calculator-tab" data-bs-toggle="tab" 
-                        data-bs-target="#calculator" type="button" role="tab">
-                    配速计算器
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="table-tab" data-bs-toggle="tab" 
-                        data-bs-target="#table" type="button" role="tab">
-                    速查表
-                </button>
-            </li>
-        </ul>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="calculator-tab" data-bs-toggle="tab" 
+                            data-bs-target="#calculator" type="button" role="tab">
+                        Pace Calculator
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="table-tab" data-bs-toggle="tab" 
+                            data-bs-target="#table" type="button" role="tab">
+                        速查表
+                    </button>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <span class="small text-muted me-2">KM</span>
+                <div class="toggle-container">
+                    <button id="unitToggle" class="toggle-button">
+                        <div class="toggle-background"></div>
+                        <div id="toggleSlider" class="toggle-slider"></div>
+                    </button>
+                </div>
+                <span class="small text-muted ms-2">MI</span>
+            </div>
+        </div>
 
         <!-- Tab Content -->
         <div class="tab-content">
@@ -86,58 +143,63 @@
                         <!-- 配速输入部分 -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <label class="h5 mb-0">配速</label>
-                            <div class="d-flex align-items-center">
-                                <span class="small text-muted me-2">KM</span>
-                                <button id="unitToggle" class="btn btn-primary position-relative" style="width: 60px; height: 30px;">
-                                    <span id="toggleButton" class="position-absolute bg-white rounded-circle" 
-                                          style="width: 24px; height: 24px; top: 3px; left: 3px; transition: transform 0.2s;">
-                                    </span>
-                                </button>
-                                <span class="small text-muted ms-2">MI</span>
-                            </div>
                         </div>
 
                         <!-- KM 配速显示 -->
                         <div id="kmPace">
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <span class="h4 mb-0" id="kmPaceDisplay">5:00</span>
-                                <button id="adjustPaceBtn" class="btn btn-light">🚀</button>
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                <span id="kmPaceMileEquiv" class="small text-muted">(8:03 /mi)</span>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <span class="badge bg-warning bg-opacity-25">
-                                    <span id="kmPaceSpeedMS">3.33</span> m/s
-                                </span>
-                                <span class="badge bg-secondary bg-opacity-25">
-                                    <span id="kmPaceSpeedKMH">12.0</span> km/h
-                                </span>
-                                <span class="badge bg-success bg-opacity-25">
-                                    <span id="kmPaceSpeedMPH">7.45</span> mi/h
-                                </span>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="h2 mb-0">
+                                            <span id="kmPaceDisplay">5:00</span>
+                                            <span class="text-muted" style="font-size: 0.7em;">/ KM</span>
+                                        </div>
+                                        <button id="adjustPaceBtn" class="btn btn-light">🚀</button>
+                                    </div>
+                                    <div class="mt-1">
+                                        <span id="kmPaceMileEquiv" class="small text-muted">(8:03 /mi)</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <span class="badge bg-warning bg-opacity-25 text-dark">
+                                        <span id="kmPaceSpeedMS">3.33</span> m/s
+                                    </span>
+                                    <span class="badge bg-secondary bg-opacity-25 text-dark">
+                                        <span id="kmPaceSpeedKMH">12.0</span> km/h
+                                    </span>
+                                    <span class="badge bg-success bg-opacity-25 text-dark">
+                                        <span id="kmPaceSpeedMPH">7.45</span> mi/h
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- MI 配速显示 -->
                         <div id="milePace" style="display: none;">
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <span class="h4 mb-0" id="milePaceDisplay">8:00</span>
-                                <button id="adjustPaceBtnMile" class="btn btn-light">🚀</button>
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                <span id="milePaceKmEquiv" class="small text-muted">(4:58 /km)</span>
-                            </div>
-                            <div class="d-flex gap-2 mt-3">
-                                <span class="badge bg-warning bg-opacity-25">
-                                    <span id="milePaceSpeedMS">3.33</span> m/s
-                                </span>
-                                <span class="badge bg-secondary bg-opacity-25">
-                                    <span id="milePaceSpeedKMH">12.0</span> km/h
-                                </span>
-                                <span class="badge bg-success bg-opacity-25">
-                                    <span id="milePaceSpeedMPH">7.45</span> mi/h
-                                </span>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="h2 mb-0">
+                                            <span id="milePaceDisplay">8:00</span>
+                                            <span class="text-muted" style="font-size: 0.7em;">/ MI</span>
+                                        </div>
+                                        <button id="adjustPaceBtnMile" class="btn btn-light">🚀</button>
+                                    </div>
+                                    <div class="mt-1">
+                                        <span id="milePaceKmEquiv" class="small text-muted">(4:58 /km)</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <span class="badge bg-warning bg-opacity-25 text-dark">
+                                        <span id="milePaceSpeedMS">3.33</span> m/s
+                                    </span>
+                                    <span class="badge bg-secondary bg-opacity-25 text-dark">
+                                        <span id="milePaceSpeedKMH">12.0</span> km/h
+                                    </span>
+                                    <span class="badge bg-success bg-opacity-25 text-dark">
+                                        <span id="milePaceSpeedMPH">7.45</span> mi/h
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -221,15 +283,15 @@
             <div class="tab-pane fade" id="table" role="tabpanel">
                 <div class="card">
                     <div class="card-body p-0">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
                             <table class="table table-hover table-striped align-middle mb-0">
                                 <thead class="table-light sticky-top bg-light">
                                     <tr>
-                                        <th class="fw-semibold px-3">配速</th>
-                                        <th class="fw-semibold px-3">5K 时间</th>
-                                        <th class="fw-semibold px-3">10K 时间</th>
-                                        <th class="fw-semibold px-3">半马 时间</th>
-                                        <th class="fw-semibold px-3">全马 时间</th>
+                                        <th class="fw-semibold px-3">配速 /KM</th>
+                                        <th class="fw-semibold px-3">5K</th>
+                                        <th class="fw-semibold px-3">10K</th>
+                                        <th class="fw-semibold px-3">半马</th>
+                                        <th class="fw-semibold px-3">全马</th>
                                     </tr>
                                 </thead>
                                 <tbody id="paceTableBody">
