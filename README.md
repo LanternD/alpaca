@@ -4,6 +4,14 @@ LanternD 前言：程序的大部分代码由 Cursor（Claude 3.5 Sonnet）生�
 
 一个简单易用的跑步配速计算器，帮助跑者快速计算不同距离的完成时间。
 
+## 界面预览
+
+### 配速计算器
+![配速计算器界面](assets/tab-pace-calculator.png)
+
+### 速查表
+![速查表界面](assets/tab-look-up-table.png)
+
 ## 主要特性
 
 ### 1. 配速计算
